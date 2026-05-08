@@ -1,0 +1,24 @@
+{
+  "name": "roblox-ts-multiple-node-modules",
+  "version": "1.1.1",
+  "description": "Roblox TS Patch for Multiple Node Modules Support",
+  "keywords": [
+    "roblox-ts",
+    "rbxts"
+  ],
+  "homepage": "https://github.com/gomes042/roblox-ts-multiple-node-modules#readme",
+  "bugs": {
+    "url": "https://github.com/gomes042/roblox-ts-multiple-node-modules/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gomes042/roblox-ts-multiple-node-modules.git"
+  },
+  "license": "MIT",
+  "author": "Lucas Gomes",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+  },
+  "private": true
+}
