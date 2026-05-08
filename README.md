@@ -41,4 +41,4 @@ Rojo Config Basic Example:
 ```
 
 # Examples
-TODO
+See specific examples and ideas at examples. (TODO)
