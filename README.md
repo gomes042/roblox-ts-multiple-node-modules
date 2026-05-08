@@ -1,44 +1,111 @@
 # roblox-ts-multiple-node-modules
-Roblox TS Patch for Multiple Node Modules Support
 
-Since Opened PR [#3009](https://github.com/roblox-ts/roblox-ts/pull/3008) (roblox-ts official repository) is still open
+A `roblox-ts` patch that adds support for using multiple `node_modules` folders across different Roblox services.
 
-# Why?
-If you want to ensure some modules or specific codes are specific for client or server, so you don't need to keep everything at ReplicatedStorage. (While you can still use ReplicatedStorage for shared dependencies).
+This is intended as a temporary workaround while the official `roblox-ts` PR for multiple `node_modules` support is still open:
 
-# Setup
+https://github.com/roblox-ts/roblox-ts/pull/3008
 
--  Override default include at `ReplicatedStorage` to `node_modules/roblox-ts-multiple-node-modules/include`.
--  `@rbxts-js` should be at **ReplicatedStorage only**.
--  rbxts_include's `path` property is **only needed at the ReplicatedStorage**.
-- `services` is **REQUIRED** and should be at `ReplicatedStorage/node_modules`.
+## ❓ Why?
 
-Rojo Config Basic Example:
+By default, `roblox-ts` expects dependencies to be placed in the shared `rbxts_include` folder, usually under `ReplicatedStorage`.
+
+This package allows you to define additional service-specific `node_modules` folders, such as:
+
+- Server-only dependencies in `ServerScriptService`
+- Client-only dependencies in `StarterPlayerScripts`
+- Shared dependencies in `ReplicatedStorage`
+- Developer-only tooling that should not replicate to every player
+
+## ⚙️ Install
+`npm install roblox-ts-multiple-node-modules`
+
+### ✅ Requirements
+
+- Override the default `rbxts_include` path in `ReplicatedStorage`.
+- `@rbxts-js` must only exist under `ReplicatedStorage`.
+- The `rbxts_include.$path` property is only required in `ReplicatedStorage`.
+- `services` is required and must be located at:
+
+```txt
+ReplicatedStorage/node_modules
+```
+
+## 🧩 Basic Rojo Example
+
 ```diff
-"ReplicatedStorage": {
-    "rbxts_include": {
--		"$path": "include"
-+        "$path": "node_modules/roblox-ts-multiple-node-modules/include",
-        "node_modules": {
-        "$className": "Folder",
-           "@rbxts": {
-                "$path": "node_modules/@rbxts"
-            },
-            "@rbxts-js": {
-                "$path": "node_modules/@rbxts-js"
-            },
+{
+    "ReplicatedStorage": {
+        "rbxts_include": {
+-           "$path": "include",
++           "$path": "node_modules/roblox-ts-multiple-node-modules/include",
+
+            "node_modules": {
+                "$className": "Folder",
+
+                "@rbxts": {
+                    "$path": "node_modules/@rbxts"
+                },
+
+                "@rbxts-js": {
+                    "$path": "node_modules/@rbxts-js"
+                }
+            }
         }
-},
-"ServerScriptService": {
-+        "rbxts_include": {
-+            "node_modules": {
-+                "$className": "Folder",
-+                "@my_modules": {
-+                   "$path": "node_modules/@my_modules"
-+                },
-+            }
+    },
+
+    "ServerScriptService": {
++       "rbxts_include": {
++           "node_modules": {
++               "$className": "Folder",
++
++               "@my_server_modules": {
++                   "$path": "node_modules/@my_server_modules"
++               }
++           }
++       }
+    }
 }
 ```
 
-# Examples
-See specific examples and ideas at examples. (TODO)
+## 💡 Usage Ideas
+
+### 1. Server-only or client-only modules
+
+You can define specific `@rbxts` modules manually for each service instead of mapping the entire `node_modules` folder.
+
+For example:
+
+- Shared dependencies can stay in `ReplicatedStorage`.
+- Server-only dependencies can be placed in `ServerScriptService`.
+- Client-only dependencies can be placed in a client service such as `StarterPlayerScripts`.
+
+This helps avoid replicating unnecessary packages to places where they are not needed.
+
+### 2. UI Labs
+
+If this UI Labs PR is accepted:
+
+https://github.com/PepeElToro41/ui-labs/pull/105
+
+You can keep the UI Labs package only inside `ServerScriptService`.
+
+If your stories are still located in shared folders, you can remove them in production by using a server script that deletes story scripts when the server starts.
+
+### 3. Developer-specific modules
+
+You can keep developer-only modules, such as Iris, out of the default replicated tree.
+
+This allows you to manually replicate them only when needed, instead of making them visible to every player by default.
+
+## 📝 Notes
+
+- Keep shared runtime dependencies in `ReplicatedStorage`.
+- Keep server-only dependencies in server services.
+- Avoid placing `@rbxts-js` outside `ReplicatedStorage.rbxts_include.node_modules`.
+- Make sure `services` exists under ReplicatedStorage's node modules (`ReplicatedStorage.rbxts_include.node_modules.@rbxts.services`).
+
+## 🚧 Status
+
+This package is a workaround until official multiple `node_modules` support is available in `roblox-ts`. [PR #3008](https://github.com/roblox-ts/roblox-ts/pull/3008
+)
