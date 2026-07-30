@@ -23,6 +23,7 @@ This package allows you to define additional service-specific `node_modules` fol
 ### ✅ Requirements
 
 - Override the default `rbxts_include` path in `ReplicatedStorage`.
+- Pass `--includePath node_modules/roblox-ts-multiple-node-modules/include` to every `rbxtsc` command, including watch mode.
 - `@rbxts-js` must only exist under `ReplicatedStorage`.
 - The `rbxts_include.$path` property is only required in `ReplicatedStorage`.
 - `services` is required and must be located at:
@@ -66,6 +67,28 @@ ReplicatedStorage/node_modules
 +       }
     }
 }
+```
+
+### Configure `rbxtsc`
+
+Changing `rbxts_include.$path` in the Rojo project is not enough by itself. `roblox-ts` also needs to know where `RuntimeLib.lua` is located.
+
+Pass the package's `include` directory using `--includePath` in every command that runs `rbxtsc`:
+
+```sh
+rbxtsc --noInclude --includePath node_modules/roblox-ts-multiple-node-modules/include --rojo default.project.json --type game
+```
+
+Use the same option in watch mode:
+
+```sh
+rbxtsc --verbose --noInclude --includePath node_modules/roblox-ts-multiple-node-modules/include --rojo default.project.json --type game --watch
+```
+
+Without `--includePath`, `roblox-ts` continues looking in the default local `include` folder and compilation can fail with:
+
+```txt
+Rojo project contained no data for include folder!
 ```
 
 ## 💡 Usage Ideas
