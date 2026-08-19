@@ -36,6 +36,18 @@ ReplicatedStorage/node_modules
 
 ```diff
 {
+    "ServerScriptService": {
++       "rbxts_include": {
++           "node_modules": {
++               "$className": "Folder",
++
++               "@my_server_modules": {
++                   "$path": "node_modules/@my_server_modules"
++               }
++           }
++       }
+    },
+
     "ReplicatedStorage": {
         "rbxts_include": {
 -           "$path": "include",
@@ -53,21 +65,10 @@ ReplicatedStorage/node_modules
                 }
             }
         }
-    },
-
-    "ServerScriptService": {
-+       "rbxts_include": {
-+           "node_modules": {
-+               "$className": "Folder",
-+
-+               "@my_server_modules": {
-+                   "$path": "node_modules/@my_server_modules"
-+               }
-+           }
-+       }
     }
 }
 ```
+- Tip for **duplicate `$path` mappings**: If the same filesystem path is mounted under both `ReplicatedStorage` and `ServerScriptService`, put `ServerScriptService` before `ReplicatedStorage` in your Rojo project. [rojo-resolver](https://github.com/roblox-ts/rojo-resolver) currently resolves a filesystem path to a single Roblox location, so when the same path appears more than once, the project declaration order can affect which location roblox-ts considers authoritative and this can cause shared modules to be incorrectly classified as server-only and produce import errors.
 
 ### Configure `rbxtsc`
 
